@@ -10,7 +10,7 @@
     "${workspaceFolder}/Include"
   ],
   "mql_tools.Metaeditor.Metaeditor4Dir": "C:\\Program Files (x86)\\OANDA - MetaTrader\\metaeditor.exe",
-  "mql_tools.Metaeditor.Metaeditor5Dir": "C:\\Program Files\\MetaTrader5\\MetaEditor.exe",
+  "mql_tools.Metaeditor.Metaeditor5Dir": "C:\\Program Files\\MetaTrader 5\\MetaEditor64.exe",
   "C_Cpp.default.intelliSenseMode": "gcc-x64",
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.autocompleteAddParentheses": true,
@@ -29,7 +29,7 @@
   },
   "editor.tabSize": 3,
   "C_Cpp.default.forcedInclude": [
-    "c:\\Users\\yo\\.vscode\\extensions\\l-i-v.mql-tools-2.2.0\\data\\mql4_en.mqh"
+    "c:\\Users\\yo\\.vscode\\extensions\\l-i-v.mql-tools-2.2.0\\data\\mql5_en.mqh"
   ],
   "C_Cpp.default.compilerPath": ""
 }
