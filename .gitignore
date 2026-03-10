@@ -2,3 +2,9 @@
 *.ex5
 *.dat
 *.chr
+*log
+*.ini
+*.wnd
+*.set
+
+Profiles/Charts/Euro/*.chr
