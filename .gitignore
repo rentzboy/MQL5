@@ -2,13 +2,9 @@
 *.ex5
 *.dat
 *.chr
-*.log
+*log
 *.ini
 *.wnd
 *.set
 
-# Ignorar carpetas de configuración y perfiles
-Profiles/
-Tester/
-Logs/
-Files/
+Profiles/Charts/Euro/*.chr

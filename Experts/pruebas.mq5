@@ -7,8 +7,6 @@
 #property link      "https://www.mql5.com"
 #property version   "1.00"
 
-
-
 struct PrecioMinuto
   {
    datetime          tiempo;
@@ -21,6 +19,8 @@ struct PrecioMinuto
 int OnInit()
   {
    EventSetTimer(60);
+   crearBotonCalcularArrayPrecios();
+   ChartRedraw();
 
    return(INIT_SUCCEEDED);
   }
@@ -30,6 +30,8 @@ int OnInit()
 void OnDeinit(const int reason)
   {
    EventKillTimer();
+   ObjectDelete(0, "BTN_CALCULAR");
+   ChartRedraw();
   }
 //+------------------------------------------------------------------+
 //| Expert tick function                                             |
@@ -37,6 +39,47 @@ void OnDeinit(const int reason)
 void OnTick()
   {
    
+  }
+//+------------------------------------------------------------------+
+//| ChartEvent function                                              |
+//+------------------------------------------------------------------+
+void OnChartEvent(const int id,
+                  const long &lparam,
+                  const double &dparam,
+                  const string &sparam)
+  {
+// Manejar el clic en el botón
+   if(id == CHARTEVENT_OBJECT_CLICK && sparam == "BTN_CALCULAR")
+     {
+      string nombre = "";
+      int total_objects = ObjectsTotal(0, -1, -1);
+
+      // Iterar por todos los objetos para encontrar el primero seleccionado (que no sea el botón)
+      for(int i = 0; i < total_objects; i++)
+        {
+         string obj_name = ObjectName(0, i);
+         if(obj_name != "BTN_CALCULAR" && ObjectGetInteger(0, obj_name, OBJPROP_SELECTED))
+           {
+            nombre = obj_name;
+            break;
+           }
+        }
+
+      if(nombre != "")
+        {
+         PrecioMinuto resultado[];
+         calcularPrecioAlMinuto(nombre, resultado);
+         mostrarArrayPrecioMinuto(resultado);
+        }
+      else
+        {
+         Alert("Por favor, selecciona una línea en el gráfico (que no sea el botón).");
+        }
+
+      // Deseleccionar el botón para efecto visual
+      ObjectSetInteger(0, "BTN_CALCULAR", OBJPROP_STATE, false);
+      ChartRedraw();
+     }
   }
 //+------------------------------------------------------------------+
 //| Timer function                                                   |
@@ -83,26 +126,41 @@ void calcularPrecioAlMinuto(string nombreObjeto, PrecioMinuto &resultado[])
      }
   }
 
-void mostrarArrayPrecioMinuto(PrecioMinuto &precioMinuto)
-{
-/*TODO: existe alguna función en la libreria de MQL5 para mostrar los datos de un array o hay que iterar
-mediante un loop y Print ? Hay alguna otra solución ? También quiero mostrar el array en los logs
-Desde donde tengo que llamar a esta función -> implementar */
-   for(int i = 0; i < 1440; i++)
+//+------------------------------------------------------------------+
+//| Muestra los primeros 100 elementos del array de precios          |
+//+------------------------------------------------------------------+
+void mostrarArrayPrecioMinuto(PrecioMinuto &resultado[])
+  {
+   int total = ArraySize(resultado);
+   int limite = (total > 100) ? 100 : total;
+
+   Print("Mostrando los primeros ", limite, " registros del array:");
+
+   for(int i = 0; i < limite; i++)
      {
-      string tiempo = TimeToString(precioMinuto[i].tiempo);
-      string precio = DoubleToString(precioMinuto[i].precio);
-      Print("Tiempo: " + tiempo + ", Precio: " + precio);
+      string tiempo = TimeToString(resultado[i].tiempo, TIME_DATE | TIME_MINUTES);
+      string precio = DoubleToString(resultado[i].precio, _Digits);
+      PrintFormat("[%d] Tiempo: %s, Precio: %s", i, tiempo, precio);
      }
-}
+  }
 
-void crearBotonCalcularArrayPrecios (void)
-{
-  /*TODO: Añadir un botón en la esquina superior del gráfico para llamar 
-  a la función calcularPrecioAlMinuto para el objeto seleccionado.
-  En caso de no haber ningún objeto seleccionado, mostrar un mensaje.
-  A esta función se llamará desde OnInit() -> crear la llamada */
-}
-
-
-
+//+------------------------------------------------------------------+
+//| Crea un botón en el gráfico para ejecutar el cálculo            |
+//+------------------------------------------------------------------+
+void crearBotonCalcularArrayPrecios(void)
+  {
+   string name = "BTN_CALCULAR";
+   if(ObjectFind(0, name) < 0)
+     {
+      ObjectCreate(0, name, OBJ_BUTTON, 0, 0, 0);
+      ObjectSetInteger(0, name, OBJPROP_CORNER, CORNER_LEFT_UPPER);
+      ObjectSetInteger(0, name, OBJPROP_XDISTANCE, 20);
+      ObjectSetInteger(0, name, OBJPROP_YDISTANCE, 20);
+      ObjectSetInteger(0, name, OBJPROP_XSIZE, 120);
+      ObjectSetInteger(0, name, OBJPROP_YSIZE, 30);
+      ObjectSetString(0, name, OBJPROP_TEXT, "Calcular Precios");
+      ObjectSetInteger(0, name, OBJPROP_COLOR, clrWhite);
+      ObjectSetInteger(0, name, OBJPROP_BGCOLOR, clrDodgerBlue);
+      ObjectSetInteger(0, name, OBJPROP_BORDER_COLOR, clrNONE);
+     }
+  }
