@@ -6,6 +6,13 @@
 #property copyright "Copyright 2026, MetaQuotes Ltd."
 #property link      "https://www.mql5.com"
 #property version   "1.00"
+
+struct PrecioMinuto
+  {
+   datetime          tiempo;
+   double            precio;
+  };
+
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -38,11 +45,38 @@ void OnTimer()
   }
 //+------------------------------------------------------------------+
 
-//TODO:Implementar el código de la función
-/* */ calcularPrecioAlMinuto(/* se le pasa una linea (horizontal o de tendencia) */)
-{
-  /* Parametro: cualquier linea del gráfico
-     return: un array de 1440 elementos con el precio de la linea en cada minuto del día actual.
-     struct {datetime tiempo; float precio}
-  */
-}
+//+------------------------------------------------------------------+
+//| Calcula el precio de un objeto de línea para cada minuto del día |
+//+------------------------------------------------------------------+
+void calcularPrecioAlMinuto(string nombreObjeto, PrecioMinuto &resultado[])
+  {
+   ArrayResize(resultado, 1440);
+
+// Obtener el inicio del día actual (00:00)
+   MqlDateTime dt;
+   TimeCurrent(dt);
+   dt.hour = 0;
+   dt.min = 0;
+   dt.sec = 0;
+   datetime tiempoInicio = StructToTime(dt);
+
+   for(int i = 0; i < 1440; i++)
+     {
+      datetime tiempoActual = tiempoInicio + i * 60;
+      resultado[i].tiempo = tiempoActual;
+
+      // Resetear error para validar la obtención del valor
+      ResetLastError();
+      double precio = ObjectGetValueByTime(0, nombreObjeto, tiempoActual, 0);
+
+      // Si hay error o el precio es 0, asignamos 0.0
+      if(GetLastError() != ERR_SUCCESS || precio <= 0)
+        {
+         resultado[i].precio = 0.0;
+        }
+      else
+        {
+         resultado[i].precio = precio;
+        }
+     }
+  }
