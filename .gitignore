@@ -8,3 +8,8 @@
 *.set
 
 Profiles/Charts/Euro/*.chr
+Profiles/Templates/ADX.tpl
+Profiles/Templates/BollingerBands.tpl
+Profiles/Templates/Momentum.tpl
+Profiles/Templates/tnote.tpl
+experts.dat
