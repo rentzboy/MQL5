@@ -55,10 +55,12 @@ void OnChartEvent(const int id,
     for(int i = 0; i < total_objects; i++)
       {
         string obj_name = ObjectName(0, i);
+        //--- check button is not selected -otherwise error-
         if(ObjectGetInteger(0, obj_name, OBJPROP_SELECTED) && obj_name != "BTN_CALCULAR")
           {
           nombre = obj_name;
           PrintFormat("Objeto seleccionado: %s", obj_name);
+          //PENDING: cambiar el loop cuando haya que seleccionar todos los objetos -producción-
           break;
           }
       }
@@ -90,6 +92,7 @@ void OnTimer() {  }
 //+------------------------------------------------------------------+
 void calcularPrecioAlMinuto(string nombreObjeto, PrecioMinuto &resultado[])
 {
+  //DynamicArray => memory from heap
   ArrayResize(resultado, 1440); // 1440 minutos en un dia
 
   // Para obtener el inicio del día actual (00:00): resetear hora, minuto y segundo (queda solo la fecha)
