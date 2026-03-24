@@ -289,14 +289,17 @@ void CRsiScanner::CreateDashboard() {
    for(int i=0; i<m_tfs.Total(); i++) {
       CTfData *data = (CTfData*)m_tfs.At(i);
       string idx = IntegerToString(i);
+      //Create labels for each timeframe: Mx - RSI value - Status (overbought/oversold)
       data.objTF.Create(0, OBJ_PREFIX+"TF_"+idx, 0, x, y);
       data.objTF.Description(data.name+":");
       data.objTF.FontSize(m_display.fontSize);
       data.objTF.Color(clrWhite);
+
       data.objRSI.Create(0, OBJ_PREFIX+"RSI_"+idx, 0, x+m_display.rsiOffset, y);
       data.objRSI.Description("...");
       data.objRSI.FontSize(m_display.fontSize);
       data.objRSI.Color(m_display.clrNeutral);
+      
       data.objStatus.Create(0, OBJ_PREFIX+"Status_"+idx, 0, x+m_display.statusOffset, y);
       data.objStatus.Description("");
       data.objStatus.FontSize(m_display.fontSize);

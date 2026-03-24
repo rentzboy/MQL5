@@ -4,7 +4,7 @@
 //|                                                     www.mql5.com |
 //+------------------------------------------------------------------+
 #include "WndObj.mqh"
-#include <ChartObjects\ChartObjectsTxtControls.mqh>
+#include <ChartObjects/ChartObjectsTxtControls.mqh>
 //+------------------------------------------------------------------+
 //| Class CPanel                                                     |
 //| Usage: control that is displayed by                              |

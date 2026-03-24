@@ -46,7 +46,7 @@ input color    InpColor_Overbought = clrRed;     // Overbought Color
 input color    InpColor_Oversold   = clrDodgerBlue; // Oversold Color
 input color    InpColor_Neutral    = clrGray;    // Neutral Color
 input color    InpColor_Background = C'20,20,20'; // Dashboard Background
-input int      InpFont_Size        = 10;         // Font Size (6-24)
+input int      FONT_SIZE        = 10;         // Font Size (6-24)
 input int      InpUpdate_Seconds   = 1;          // Update Interval (1-60 seconds)
 input bool     InpVerbose_Logging  = false;      // Enable verbose debug logging
 
@@ -78,7 +78,7 @@ void GetScannerInputs(SRsiSettings &rsi, SAlertSettings &alerts, SDisplaySetting
    display.clrOS = InpColor_Oversold;
    display.clrNeutral = InpColor_Neutral;
    display.clrBG = InpColor_Background;
-   display.fontSize = (int)MathMax(6, MathMin(24, InpFont_Size));
+   display.fontSize = (int)MathMax(6, MathMin(24, FONT_SIZE));
    display.updateSec = (int)MathMax(1, MathMin(60, InpUpdate_Seconds));
    display.verbose = InpVerbose_Logging;
    
