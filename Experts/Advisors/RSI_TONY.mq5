@@ -79,6 +79,7 @@ protected:
               const int x1,const int y1,const int x2,const int y2);
   bool CreatePanel(int x1, int y1, int x2, int y2);
   bool CreateTimeFrameLabels(void);
+  bool CreateTimeFrameLabels2(void);
 
 public:
   CDisplay(/* args */) {};
@@ -127,7 +128,7 @@ bool CDisplay:: CreateTimeFrameLabels(void)
 
   if(InpShow_M1)
   {
-    if(!m_timeFrame[i].Create(0, "M1", 0, x1, x2, y1, y2)) return false;
+    if(!m_timeFrame[i].Create(0, "M1", m_subwin, x1, x2, y1, y2)) return false;
     m_timeFrame[i].Text("M1");
     //m_timeFrame[i].ColorText(clrWhite);
     m_timeFrame[i].ColorBackground(clrWheat);
@@ -190,13 +191,50 @@ bool CDisplay:: CreateTimeFrameLabels(void)
   return true;
 }
 
+
+bool CDisplay::CreateTimeFrameLabels2(void)
+{
+   int i = 0; 
+   int x_start = ALIGNMENT_LEFT;
+   int y_curr  = ALIGNMENT_TOP;
+   int line_height = FONT_SIZE + 8; 
+
+   ENUM_TIMEFRAMES tfs[] = {PERIOD_M1, PERIOD_M5, PERIOD_M15, PERIOD_M30, PERIOD_H1, PERIOD_H4, PERIOD_D1};
+   string names[] = {"M1", "M5", "M15", "M30", "H1", "H4", "D1"};
+   bool show[] = {InpShow_M1, InpShow_M5, InpShow_M15, InpShow_M30, InpShow_H1, InpShow_H4, InpShow_D1};
+
+   for(int k=0; k<ArraySize(show); k++)
+   {
+      if(show[k])
+      {
+         string objName = "RSI_LBL_" + names[k];
+
+         // Creamos la etiqueta RELATIVA al container
+         if(!m_timeFrame[i].Create(m_chart_id, objName, m_subwin, x_start, y_curr, x_start + 50, y_curr + FONT_SIZE))
+            return false;
+
+         m_timeFrame[i].Text(names[k] + ":");
+         m_timeFrame[i].FontSize(FONT_SIZE);
+
+         // IMPORTANTE: Añadimos la etiqueta al diálogo principal
+         if(!Add(m_timeFrame[i])) return false;
+
+         y_curr += line_height; 
+         i++; 
+      }
+   }
+
+   ChartRedraw();
+   return true;
+}
+
 bool CDisplay::Initialize()
 {
   //1- Crear el container -coordenadas absolutas-
   g_display.Create(0, "RSI_Display", 0, DISPLAY_XX, DISPLAY_YY, DISPLAY_XX + 
                   DISPLAY_WIDTH, DISPLAY_YY + DISPLAY_WIDTH);  
   //1- Crear el panel -coordenadas relativas-
-   g_display.CreatePanel(0, 0, DISPLAY_XX / 2, DISPLAY_YY / 2);
+   g_display.CreatePanel(0, 0, DISPLAY_WIDTH / 2, DISPLAY_WIDTH / 2);
   //2- Crear los timeFrames labels -coordenadas relativas-
    g_display.CreateTimeFrameLabels();
 
