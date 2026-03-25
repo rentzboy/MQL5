@@ -70,9 +70,9 @@ class CDisplay : public CDialog //para heredar los métodos Add(), Delete(), Des
 {
 private:
   CPanel m_panel; //CPanel es una clase derivada de CRect
-  CLabel m_timeFrame[6];
-  CLabel m_rsiTimeFrame[6];
-  CLabel m_rsiOverSoldBought[6];
+  CLabel m_timeFrame[7];
+  CLabel m_rsiTimeFrame[7];
+  CLabel m_rsiOverSoldBought[7];
 
 protected:
   bool Create(const long chart,const string name,const int subwin,
@@ -113,7 +113,7 @@ bool CDisplay::CreatePanel(int x1, int y1, int x2, int y2)
   m_panel.ColorBackground(clrDodgerBlue);
   m_panel.ColorBorder(clrDarkOrange);
   m_panel.FontSize(FONT_SIZE);
-  Print("Panel created");
+  PrintFormat("Panel created: x1=%d, y1=%d, x2=%d, y2=%d", x1, y1, x2, y2);
   if(!Add(m_panel)) return false;
   return true;
 }
@@ -124,41 +124,47 @@ bool CDisplay:: CreateTimeFrameLabels(void)
   int x1 = ALIGNMENT_LEFT;
   int x2 = ALIGNMENT_LEFT + (FONT_SIZE * 4) + SPACING;
   int y1 = ALIGNMENT_TOP;
-  int y2 = ALIGNMENT_TOP + (FONT_SIZE * 2) + SPACING;
+  int y2 = ALIGNMENT_TOP + FONT_SIZE + SPACING;
 
   if(InpShow_M1)
   {
-    if(!m_timeFrame[i].Create(0, "M1", m_subwin, x1, x2, y1, y2)) return false;
+    //if(!m_timeFrame[i].Create(m_chart_id, objName, 0, x_start, y_curr, x_start + 50, y_curr + FONT_SIZE)) return false;
+    if(!m_timeFrame[i].Create(m_chart_id, "M1", 0, x1, x2, y1, y2)) return false;
     m_timeFrame[i].Text("M1");
+    m_timeFrame[i].FontSize(FONT_SIZE);
     //m_timeFrame[i].ColorText(clrWhite);
     m_timeFrame[i].ColorBackground(clrWheat);
-    ChartRedraw();
-    y1 += FONT_SIZE*3;
-    y2 += FONT_SIZE*3;
-    Print("Timeframe M1 label creado");
+    PrintFormat("Timeframe M1 label creado: x1=%d, y1=%d, x2=%d, y2=%d", x1, y1, x2, y2);
+    y1 += FONT_SIZE*2;
+    y2 += FONT_SIZE*2;
+    if (!Add(m_timeFrame[i])) return false;
     i++;
   }
   if(InpShow_M5)
   {
-    if(!m_timeFrame[i].Create(0, "M5", 0, x1, x2, y1+20, y2+20)) return false;
-    m_timeFrame[i].Text("M55555555");
-    ChartRedraw();
-    y1 += FONT_SIZE*3;
-    y2 += FONT_SIZE*3;
+    if(!m_timeFrame[i].Create(m_chart_id, "M5", 0, x1, x2, y1, y2)) return false;
+    m_timeFrame[i].Text("M5");
+    m_timeFrame[i].FontSize(FONT_SIZE);
+    PrintFormat("Timeframe M5 label creado: x1=%d, y1=%d, x2=%d, y2=%d", x1, y1, x2, y2);
+    y1 += FONT_SIZE*2;
+    y2 += FONT_SIZE*2;
+    if (!Add(m_timeFrame[i])) return false;
     i++;
-    Print("Timeframe M5 label creado");
   } 
   if(InpShow_M15)
   {
-    if(!m_timeFrame[i].Create(0, "M15", 0, x1, x2, y1+20, y2+20)) return false;
+    if(!m_timeFrame[i].Create(m_chart_id, "M15", 0, x1, x2, y1, y2)) return false;
     m_timeFrame[i].Text("M15");
-    ChartRedraw();
-    y1 += FONT_SIZE*3;
-    y2 += FONT_SIZE*3;
+    m_timeFrame[i].FontSize(FONT_SIZE);
+    PrintFormat("Timeframe M15 label creado: x1=%d, y1=%d, x2=%d, y2=%d", x1, y1, x2, y2);
+    y1 += FONT_SIZE*2;
+    y2 += FONT_SIZE*2;
+    if (!Add(m_timeFrame[i])) return false;
     i++;
-    Print("Timeframe M15 label creado");
   } 
-  if(InpShow_M30)
+  PrintFormat("i=%d", i);
+  ChartRedraw();
+/*   if(InpShow_M30)
   {
     if(!m_timeFrame[i].Create(0, "M30", 0, x1, x2, y1, y2)) return false;
     y1 += FONT_SIZE*3;
@@ -181,13 +187,13 @@ bool CDisplay:: CreateTimeFrameLabels(void)
     y2 += FONT_SIZE*3;
     i++;
     Print("Timeframe H4 label creado");
-  } 
+  }  */
 
   //Importante para que CWndContainer::Destroy() pueda borrarlo
-   for (int i = 0; i < ArraySize(m_timeFrame); i++)
+/*    for (int i = 0; i < ArraySize(m_timeFrame); i++)
   {
     if (!Add(m_timeFrame[i])) return false;
-  } 
+  }  */
   return true;
 }
 
@@ -215,6 +221,7 @@ bool CDisplay::CreateTimeFrameLabels2(void)
 
          m_timeFrame[i].Text(names[k] + ":");
          m_timeFrame[i].FontSize(FONT_SIZE);
+         PrintFormat("Timeframe %s label creado: x1=%d, y1=%d, x2=%d, y2=%d", names[k], x_start, y_curr, x_start + 50, y_curr + FONT_SIZE);
 
          // IMPORTANTE: Añadimos la etiqueta al diálogo principal
          if(!Add(m_timeFrame[i])) return false;
