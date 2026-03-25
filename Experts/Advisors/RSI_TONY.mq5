@@ -62,22 +62,30 @@ input color    InpColor_Background = clrBlack; // Dashboard Background
 
 
 /* --------------- Class CDisplay -------------------- */
+/* Habrá que llamar a CDisplay::Create() para crear el container
+desde CDisplay::Create() y Add(control) para cada control de CDisplay
+De esta manera todos los objetos se crearan con coordenadas relativas,
+a la esquina superior izquierda del container object */
 class CDisplay : public CDialog //para heredar los métodos Add(), Delete(), Destroy(), ....
 {
 private:
-  CPanel m_panel; //Solo es un objeto derivado de CRect
+  CPanel m_panel; //CPanel es una clase derivada de CRect
   CLabel m_timeFrame[6];
   CLabel m_rsiTimeFrame[6];
   CLabel m_rsiOverSoldBought[6];
 
+protected:
+  bool Create(const long chart,const string name,const int subwin,
+              const int x1,const int y1,const int x2,const int y2);
+  bool CreatePanel(int x1, int y1, int x2, int y2);
+  bool CreateTimeFrameLabels(void);
+
 public:
   CDisplay(/* args */) {};
   ~CDisplay() {Print("CDisplay destroyed");};
+  bool Initialize();
   //Destroy(): se hereda de CWndContainer from CDialog
   //Add(): se hereda de CWndContainer from CDialog
-  bool CreatePanel(int x1, int y1, int x2, int y2);
-  bool CreateTimeFrameLabels(void);
-  bool Initialize();
 };
 
 /* void CDisplay::Destroy(void)
@@ -89,6 +97,14 @@ public:
 
   m_panel.Destroy(); //esto también debería borrar lo que hay dentro
 } */
+
+/* Create the visual Object */
+bool CDisplay::Create(const long chart,const string name,const int subwin,
+                      const int x1,const int y1,const int x2,const int y2)
+{
+  if(!CDialog::Create(chart,name,subwin,x1,y1,x2,y2)) return false;
+  return true;
+}
 
 bool CDisplay::CreatePanel(int x1, int y1, int x2, int y2)
 {
@@ -104,10 +120,10 @@ bool CDisplay::CreatePanel(int x1, int y1, int x2, int y2)
 bool CDisplay:: CreateTimeFrameLabels(void)
 {
   int i = 0;
-  int x1 = DISPLAY_XX + ALIGNMENT_LEFT;
-  int x2 = DISPLAY_XX + ALIGNMENT_LEFT + (FONT_SIZE * 4)+ SPACING;
-  int y1 = DISPLAY_YY + ALIGNMENT_TOP;
-  int y2 = DISPLAY_YY + ALIGNMENT_TOP + (FONT_SIZE * 2);
+  int x1 = ALIGNMENT_LEFT;
+  int x2 = ALIGNMENT_LEFT + (FONT_SIZE * 4) + SPACING;
+  int y1 = ALIGNMENT_TOP;
+  int y2 = ALIGNMENT_TOP + (FONT_SIZE * 2) + SPACING;
 
   if(InpShow_M1)
   {
@@ -176,10 +192,12 @@ bool CDisplay:: CreateTimeFrameLabels(void)
 
 bool CDisplay::Initialize()
 {
-  //1- Crear el panel
-   g_display.CreatePanel(DISPLAY_XX, DISPLAY_YY, DISPLAY_XX +
-                         DISPLAY_WIDTH, DISPLAY_YY + DISPLAY_WIDTH);
-  //2- Crear los timeFrames labels
+  //1- Crear el container -coordenadas absolutas-
+  g_display.Create(0, "RSI_Display", 0, DISPLAY_XX, DISPLAY_YY, DISPLAY_XX + 
+                  DISPLAY_WIDTH, DISPLAY_YY + DISPLAY_WIDTH);  
+  //1- Crear el panel -coordenadas relativas-
+   g_display.CreatePanel(0, 0, DISPLAY_XX / 2, DISPLAY_YY / 2);
+  //2- Crear los timeFrames labels -coordenadas relativas-
    g_display.CreateTimeFrameLabels();
 
   return true;
