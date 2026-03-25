@@ -89,16 +89,6 @@ public:
   //Add(): se hereda de CWndContainer from CDialog
 };
 
-/* void CDisplay::Destroy(void)
-{
-  for(int i=0; i<ArraySize(m_timeFrame); i++)
-  {
-    m_timeFrame[i].Destroy();//Borra físicamente el objeto del gráfico
-  }
-
-  m_panel.Destroy(); //esto también debería borrar lo que hay dentro
-} */
-
 /* Create the visual Object */
 bool CDisplay::Create(const long chart,const string name,const int subwin,
                       const int x1,const int y1,const int x2,const int y2)
@@ -128,9 +118,8 @@ bool CDisplay:: CreateTimeFrameLabels(void)
 
   if(InpShow_M1)
   {
-    //if(!m_timeFrame[i].Create(m_chart_id, objName, 0, x_start, y_curr, x_start + 50, y_curr + FONT_SIZE)) return false;
-    if(!m_timeFrame[i].Create(m_chart_id, "M1", 0, x1, x2, y1, y2)) return false;
-    m_timeFrame[i].Text("M1");
+    if(!m_timeFrame[i].Create(m_chart_id, "M1", 0, x1, y1, x2, y2)) return false;
+    m_timeFrame[i].Text("M1:");
     m_timeFrame[i].FontSize(FONT_SIZE);
     //m_timeFrame[i].ColorText(clrWhite);
     m_timeFrame[i].ColorBackground(clrWheat);
@@ -142,8 +131,8 @@ bool CDisplay:: CreateTimeFrameLabels(void)
   }
   if(InpShow_M5)
   {
-    if(!m_timeFrame[i].Create(m_chart_id, "M5", 0, x1, x2, y1, y2)) return false;
-    m_timeFrame[i].Text("M5");
+    if(!m_timeFrame[i].Create(m_chart_id, "M5", 0, x1, y1, x2, y2)) return false;
+    m_timeFrame[i].Text("M5:");
     m_timeFrame[i].FontSize(FONT_SIZE);
     PrintFormat("Timeframe M5 label creado: x1=%d, y1=%d, x2=%d, y2=%d", x1, y1, x2, y2);
     y1 += FONT_SIZE*2;
@@ -153,8 +142,8 @@ bool CDisplay:: CreateTimeFrameLabels(void)
   } 
   if(InpShow_M15)
   {
-    if(!m_timeFrame[i].Create(m_chart_id, "M15", 0, x1, x2, y1, y2)) return false;
-    m_timeFrame[i].Text("M15");
+    if(!m_timeFrame[i].Create(m_chart_id, "M15", 0, x1, y1, x2, y2)) return false;
+    m_timeFrame[i].Text("M15:");
     m_timeFrame[i].FontSize(FONT_SIZE);
     PrintFormat("Timeframe M15 label creado: x1=%d, y1=%d, x2=%d, y2=%d", x1, y1, x2, y2);
     y1 += FONT_SIZE*2;
@@ -248,8 +237,21 @@ bool CDisplay::Initialize()
   return true;
 }
 
-CDisplay g_display;
 
+/* void CDisplay::Destroy(void)
+{
+  for(int i=0; i<ArraySize(m_timeFrame); i++)
+  {
+    m_timeFrame[i].Destroy();//Borra físicamente el objeto del gráfico
+  }
+
+  m_panel.Destroy(); //esto también debería borrar lo que hay dentro
+} */
+
+/* --------------- END Class CDisplay -------------------- */
+
+
+CDisplay g_display;
 
 
 //+------------------------------------------------------------------+
