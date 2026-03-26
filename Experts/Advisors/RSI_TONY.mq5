@@ -79,7 +79,6 @@ protected:
               const int x1,const int y1,const int x2,const int y2);
   bool CreatePanel(int x1, int y1, int x2, int y2);
   bool CreateTimeFrameLabels(void);
-  bool CreateTimeFrameLabels2(void);
 
 public:
   CDisplay(/* args */) {};
@@ -108,111 +107,32 @@ bool CDisplay::CreatePanel(int x1, int y1, int x2, int y2)
   return true;
 }
 
-bool CDisplay:: CreateTimeFrameLabels(void)
-{
-  int i = 0;
-  int x1 = ALIGNMENT_LEFT;
-  int x2 = ALIGNMENT_LEFT + (FONT_SIZE * 4) + SPACING;
-  int y1 = ALIGNMENT_TOP;
-  int y2 = ALIGNMENT_TOP + FONT_SIZE + SPACING;
-
-  if(InpShow_M1)
-  {
-    if(!m_timeFrame[i].Create(m_chart_id, "M1", 0, x1, y1, x2, y2)) return false;
-    m_timeFrame[i].Text("M1:");
-    m_timeFrame[i].FontSize(FONT_SIZE);
-    //m_timeFrame[i].ColorText(clrWhite);
-    m_timeFrame[i].ColorBackground(clrWheat);
-    PrintFormat("Timeframe M1 label creado: x1=%d, y1=%d, x2=%d, y2=%d", x1, y1, x2, y2);
-    y1 += FONT_SIZE*2;
-    y2 += FONT_SIZE*2;
-    if (!Add(m_timeFrame[i])) return false;
-    i++;
-  }
-  if(InpShow_M5)
-  {
-    if(!m_timeFrame[i].Create(m_chart_id, "M5", 0, x1, y1, x2, y2)) return false;
-    m_timeFrame[i].Text("M5:");
-    m_timeFrame[i].FontSize(FONT_SIZE);
-    PrintFormat("Timeframe M5 label creado: x1=%d, y1=%d, x2=%d, y2=%d", x1, y1, x2, y2);
-    y1 += FONT_SIZE*2;
-    y2 += FONT_SIZE*2;
-    if (!Add(m_timeFrame[i])) return false;
-    i++;
-  } 
-  if(InpShow_M15)
-  {
-    if(!m_timeFrame[i].Create(m_chart_id, "M15", 0, x1, y1, x2, y2)) return false;
-    m_timeFrame[i].Text("M15:");
-    m_timeFrame[i].FontSize(FONT_SIZE);
-    PrintFormat("Timeframe M15 label creado: x1=%d, y1=%d, x2=%d, y2=%d", x1, y1, x2, y2);
-    y1 += FONT_SIZE*2;
-    y2 += FONT_SIZE*2;
-    if (!Add(m_timeFrame[i])) return false;
-    i++;
-  } 
-  PrintFormat("i=%d", i);
-  ChartRedraw();
-/*   if(InpShow_M30)
-  {
-    if(!m_timeFrame[i].Create(0, "M30", 0, x1, x2, y1, y2)) return false;
-    y1 += FONT_SIZE*3;
-    y2 += FONT_SIZE*3;
-    i++;
-    Print("Timeframe M30 label creado");
-  } 
-  if(InpShow_H1)
-  {
-    if(!m_timeFrame[i].Create(0, "H1", 0, x1, x2, y1, y2)) return false;
-    y1 += FONT_SIZE*3;
-    y2 += FONT_SIZE*3;
-    i++;
-    Print("Timeframe H1 label creado");
-  } 
-  if(InpShow_H4)
-  {
-    if(!m_timeFrame[i].Create(0, "H4", 0, x1, x2, y1, y2)) return false;
-    y1 += FONT_SIZE*3;
-    y2 += FONT_SIZE*3;
-    i++;
-    Print("Timeframe H4 label creado");
-  }  */
-
-  //Importante para que CWndContainer::Destroy() pueda borrarlo
-/*    for (int i = 0; i < ArraySize(m_timeFrame); i++)
-  {
-    if (!Add(m_timeFrame[i])) return false;
-  }  */
-  return true;
-}
-
-
-bool CDisplay::CreateTimeFrameLabels2(void)
+bool CDisplay::CreateTimeFrameLabels(void)
 {
    int i = 0; 
    int x_start = ALIGNMENT_LEFT;
+   int x_end = x_start + (FONT_SIZE * 4);
    int y_curr  = ALIGNMENT_TOP;
    int line_height = FONT_SIZE + 8; 
 
-   ENUM_TIMEFRAMES tfs[] = {PERIOD_M1, PERIOD_M5, PERIOD_M15, PERIOD_M30, PERIOD_H1, PERIOD_H4, PERIOD_D1};
-   string names[] = {"M1", "M5", "M15", "M30", "H1", "H4", "D1"};
-   bool show[] = {InpShow_M1, InpShow_M5, InpShow_M15, InpShow_M30, InpShow_H1, InpShow_H4, InpShow_D1};
+   string TF_labels[] = {"M1", "M5", "M15", "M30", "H1", "H4", "D1"};
+   bool showTF[] = {InpShow_M1, InpShow_M5, InpShow_M15, InpShow_M30, InpShow_H1, InpShow_H4, InpShow_D1};
 
-   for(int k=0; k<ArraySize(show); k++)
+   for(int k=0; k<ArraySize(showTF); k++)
    {
-      if(show[k])
+      if(showTF[k])
       {
-         string objName = "RSI_LBL_" + names[k];
+         string objName = "RSI_LBL_" + TF_labels[k];
 
-         // Creamos la etiqueta RELATIVA al container
-         if(!m_timeFrame[i].Create(m_chart_id, objName, m_subwin, x_start, y_curr, x_start + 50, y_curr + FONT_SIZE))
+         // Creamos la etiqueta con las coordenadas relativas al container
+         if(!m_timeFrame[i].Create(m_chart_id, objName, m_subwin, x_start, y_curr, x_end, y_curr + FONT_SIZE))
             return false;
 
-         m_timeFrame[i].Text(names[k] + ":");
+         m_timeFrame[i].Text(TF_labels[k] + ":");
          m_timeFrame[i].FontSize(FONT_SIZE);
-         PrintFormat("Timeframe %s label creado: x1=%d, y1=%d, x2=%d, y2=%d", names[k], x_start, y_curr, x_start + 50, y_curr + FONT_SIZE);
+         PrintFormat("Timeframe %s label creado: x1=%d, y1=%d, x2=%d, y2=%d", TF_labels[k], x_start, x_end, y_curr + FONT_SIZE);
 
-         // IMPORTANTE: Añadimos la etiqueta al diálogo principal
+         // IMPORTANTE: Añadimos la etiqueta al panel principal (container)
          if(!Add(m_timeFrame[i])) return false;
 
          y_curr += line_height; 
