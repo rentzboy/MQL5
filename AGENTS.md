@@ -5,3 +5,5 @@ Para futuros cambios, recuerda utilizar SIEMPRE el forward slash (/) en las ruta
 `#include <Folder/Filename.mqh>`
 
 NUNCA incluyas números de línea (#) dentro de los bloques de código para que el usuario pueda copiar y pegar directamente sin errores.
+
+Antes de responder, comprobar que la respuesta se basa en la última versión de los archivos.
