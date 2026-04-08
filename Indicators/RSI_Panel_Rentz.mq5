@@ -100,8 +100,8 @@ protected:
   bool CreatePanel(int x1, int y1, int x2, int y2);
   bool CreatePanelLabels(void);
   void PrintLabelCoordenates(CWndObj &win);
-
-  public:
+  
+public:
   CDisplay(/* args */) {};
   ~CDisplay() {Print("CDisplay destroyed");};
   bool Initialize(void);
@@ -110,50 +110,7 @@ protected:
   //Add(): se hereda de CWndContainer from CDialog
 };
 
-void CDisplay::UpdateRSI(void)
-{
-  bool showTF[] = {InpShow_M1, InpShow_M5, InpShow_M15, InpShow_M30, InpShow_H1, InpShow_H4, InpShow_D1};
-   for(int i=0; i<ArraySize(showTF); i++)
-   {
-      if(showTF[i] && i == 0)
-      {
-        g_indicator[i].Refresh();
-        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
-      }
-      if(showTF[i] && i == 1)
-      {
-        g_indicator[i].Refresh();
-        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
-      }
-      if(showTF[i] && i == 2)
-      {
-        g_indicator[i].Refresh();
-        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
-      }
-      if(showTF[i] && i == 3)
-      {
-        g_indicator[i].Refresh();
-        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
-      }
-      if(showTF[i] && i == 4)
-      {
-        g_indicator[i].Refresh();
-        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
-      }
-      if(showTF[i] && i == 5)
-      {
-        g_indicator[i].Refresh();
-        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
-      }
-      if(showTF[i] && i == 6)
-      {
-        g_indicator[i].Refresh();
-        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
-      }
-   }
-   ChartRedraw();
-}
-
+/* --------------- CDisplay PROTECTED functions -------------------- */
 void CDisplay::PrintLabelCoordenates(CWndObj &win)
 {
   int x1 = win.Rect().left;
@@ -164,7 +121,7 @@ void CDisplay::PrintLabelCoordenates(CWndObj &win)
   PrintFormat("TimeFrameLabel Right-bottom: %d - %d", x2, y2);
 }
 
-/* Create the visual Object */
+/* Create the main Panel Object */
 bool CDisplay::Create(const long chart,const string name,const int subwin,
                       const int x1,const int y1,const int x2,const int y2)
 {
@@ -172,6 +129,7 @@ bool CDisplay::Create(const long chart,const string name,const int subwin,
   return true;
 }
 
+/* Create the Blue Panel Object */
 bool CDisplay::CreatePanel(int x1, int y1, int x2, int y2)
 {
   if(!m_panel.Create(0, "RSI_Panel", 0, x1, y1, x2, y2)) return false; 
@@ -226,10 +184,55 @@ bool CDisplay::CreatePanelLabels(void)
    return true;
 }
 
+/* --------------- CDisplay PUBLIC functions -------------------- */
+
+void CDisplay::UpdateRSI(void)
+{
+  bool showTF[] = {InpShow_M1, InpShow_M5, InpShow_M15, InpShow_M30, InpShow_H1, InpShow_H4, InpShow_D1};
+   for(int i=0; i<ArraySize(showTF); i++)
+   {
+      if(showTF[i] && i == 0)
+      {
+        g_indicator[i].Refresh();
+        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
+      }
+      if(showTF[i] && i == 1)
+      {
+        g_indicator[i].Refresh();
+        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
+      }
+      if(showTF[i] && i == 2)
+      {
+        g_indicator[i].Refresh();
+        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
+      }
+      if(showTF[i] && i == 3)
+      {
+        g_indicator[i].Refresh();
+        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
+      }
+      if(showTF[i] && i == 4)
+      {
+        g_indicator[i].Refresh();
+        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
+      }
+      if(showTF[i] && i == 5)
+      {
+        g_indicator[i].Refresh();
+        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
+      }
+      if(showTF[i] && i == 6)
+      {
+        g_indicator[i].Refresh();
+        m_rsiTimeFrame[i].Text(DoubleToString(g_indicator[i].Main(0), 2));
+      }
+   }
+   ChartRedraw();
+}
 bool CDisplay::Initialize()
 {
   //1- Crear el container -coordenadas absolutas-
-  g_display.Create(ChartID(), "RSI_Display", 0, DISPLAY_XX, DISPLAY_YY, DISPLAY_XX + 
+  g_display.Create(ChartID(), "RSI_Display_", 0, DISPLAY_XX, DISPLAY_YY, DISPLAY_XX + 
                   DISPLAY_WIDTH, DISPLAY_YY + DISPLAY_WIDTH);  
   //1- Crear el panel -coordenadas relativas-
    g_display.CreatePanel(0, 0, DISPLAY_WIDTH / 2, DISPLAY_WIDTH / 2);
@@ -339,7 +342,7 @@ void OnTimer()
 //+------------------------------------------------------------------+
 
 //+------------------------------------------------------------------+
-//| Calculate function                                                   |
+//| Calculate function                                                |
 //+------------------------------------------------------------------+
 int OnCalculate(const int rates_total,
                  const int prev_calculated,
@@ -417,4 +420,22 @@ int OnCalculate(const int rates_total,
   return rates_total;
 }
 
+//+------------------------------------------------------------------+
+//| Event function                                                |
+//+------------------------------------------------------------------+
+void OnChartEvent(const int id, 
+                  const long &lparam, 
+                  const double &dparam, 
+                  const string &sparam)
+{
+  //No es necesario meterlo en un IF, la función tiene su propio mapeo
+  g_display.OnEvent(id, lparam, dparam, sparam);
+  //PrintFormat("Display visible: %d", g_display.IsVisible());
+
+  //--- the mouse has been clicked on the graphic object 
+  if(id==CHARTEVENT_OBJECT_CLICK && sparam == "RSI_Display_Close") 
+  { 
+    Print("The mouse has been clicked on the object with name '"+sparam+"'"); 
+  }
+} 
 //+------------------------------------------------------------------+
